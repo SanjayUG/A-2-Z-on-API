@@ -6,7 +6,9 @@ Welcome! This repository is a curated collection of notes and resources designed
 
 1.  [APIs](./APIs/)
 2.  [Computer Networks](./Computer-Networks/)
-3.  [Helpful Resources](#helpful-resources)
+3.  [Interview Specific](./Interview%20Specific/)
+4.  [Web Development](./Web%20dev/)
+5.  [Helpful Resources](#helpful-resources)
 
 ---
 
@@ -31,6 +33,20 @@ A deep dive into the world of computer networks, structured for easy learning fr
 - The OSI and TCP/IP Models
 - In-depth explanations of each network layer (Physical, Data Link, Network, Transport, Application)
 - Key protocols like TCP, UDP, HTTP, and DNS.
+
+### 📝 [Interview Specific](./Interview%20Specific/)
+
+This section contains a collection of PDFs with common HR and tricky interview questions, as well as tips on using the STAR method for answering behavioral questions.
+
+### 💻 [Web Development](./Web%20dev/)
+
+This section provides resources for web development, including HTML, CSS, and JavaScript, as well as React interview questions.
+
+**Topics include:**
+- HTML basics
+- CSS concepts (Box Model, Flexbox, Grid)
+- JavaScript fundamentals and advanced topics (ES6, async/await)
+- React interview quizzes
 
 ---
 
