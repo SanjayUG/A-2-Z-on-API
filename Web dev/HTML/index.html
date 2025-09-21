@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 1</title>
+</head>
+
+<body>
+    <!-- Heading Tags -->
+    <h1>This is the largest heading tag</h1>
+    <h2>This is the 2nd largest heading tag</h2>
+    <h3>This is the 3rd largest heading tag</h3>
+    <h4>This is the 4th largest heading tag</h4>
+    <h5>This is the 5th largest heading tag</h5>
+    <h6>This is the smallest heading tag</h6>
+
+    <!-- Paragraph Tags -->
+    <p>Hello I'm inside the Paragraph</p>
+    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatibus fugit fuga nesciunt? Perspiciatis fuga, voluptatum praesentium commodi accusamus quaerat nobis accusantium hic blanditiis pariatur tempore omnis deleniti qui ex in.</p>
+
+    <!-- no child -> so single tag -->
+    <br> <br>
+
+    <!-- horizontal tag -->
+    <hr>
+
+
+    <!-- anchor tag-->
+    <a href="https://www.google.com">Google</a>
+    <br>
+
+    <!-- image tag-->
+    <img src="../HTML/images/cat.jpg" alt="Cat Image" width="200px">
+
+    <!-- List tag-->
+    <ul>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>Js</li>
+        <li>React</li>
+    </ul>
+
+    <ol>
+        <li>Coffee</li>
+        <li>More Coffee</li>
+        <li>Filtered Coffee</li>
+        <li>It's not enough</li>
+    </ol>
+
+    <!-- Div tag-->
+    <div>
+        <h2>Hello, I'm a heading tag inside a div</h2>
+        <p>And I'm a <span style="color:rgb(204, 115, 31); font-size: 20px;">Paragraph</span> inside a div</p>
+    </div>
+
+    <!-- form tag-->
+    <!-- get method passed through the url (not secure, but fast)
+    post method passed through in body (secure, but slow) -->
+    <form action="/submit" method="get">
+        <label>Username: </label>
+        <input type="text" id="username" placeholder="Enter your username" required/>
+        <br><br>
+
+        <label>Email: </label>
+        <input type="email" id="email" placeholder="Enter your email" required />
+        <br><br>
+
+        <label>DOB: </label>
+        <input type="date" id="dob" placeholder="Enter your date of birth" required />
+        <br><br>
+
+        <label>Phone: </label>
+        <input type="number" id="phone" placeholder="Enter your Phone no." required />
+        <br><br>
+
+        <input type="submit" value="Submit" />
+    </form> <br><br>
+
+    <!-- table tag-->
+    <table border="2">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>City</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>101</td>
+                <td>Sam</td>
+                <td>Mang</td>
+            </tr>
+            <tr>
+                <td>102</td>
+                <td>Altman</td>
+                <td>Bang</td>
+            </tr>
+            <tr>
+                <td>104</td>
+                <td>Elon</td>
+                <td>Mysore</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
