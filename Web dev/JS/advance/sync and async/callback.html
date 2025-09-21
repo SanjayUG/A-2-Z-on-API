@@ -1,0 +1,62 @@
+<!-- problem with Async (solved using callback) -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>script2</title>
+</head>
+
+<body>
+    <h1>Employee Record: </h1>
+    <script>
+        // create 2 array objects
+        const datas = [
+            { name: "ABC", Profession: "Software Developer" },
+            { name: "XYZ", Profession: "Software Tester" }
+        ];
+
+        // function to get the array objects and display on the body 
+        function getDatas() {
+
+            setTimeout(() => {
+                let output = "";
+                datas.forEach((data, index) => {
+                    output += `<li> ${data.name} - ${data.Profession} </li>`
+                })
+                document.body.innerHTML = output;
+
+            }, 3000);
+        }
+
+        // function to create a new array object 
+        function createData(newData, callback) {
+            setTimeout(() => {
+                datas.push(newData);
+                callback();
+            }, 5000);
+        }
+
+
+        createData({name: "Ajay", Profession: "DataBase Admin"}, getDatas);
+
+    </script>
+</body>
+
+</html>
+
+
+<!-- 
+first create an array of  2 objects with keys name Profession
+getDatas is to get the data from the array and assign it to output variable and then display it in the body
+createData is to create the 3rd object in the array
+
+here we have used the callback to solve a problem, if we dont use the callback then the problem is:
+we are getting and displaying the data in the 3rd second, but the 3rd object is created in the 5th second (so by the time 3rd object is created the data is already display in the body);
+
+how callback solves this:
+first data is created and for the same createData function we pass the getDatas as the callback (first data needs to be created and then the display is performed). -->

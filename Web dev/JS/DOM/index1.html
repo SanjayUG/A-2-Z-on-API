@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM 2</title>
+</head>
+<body>
+    <h1 class="head1">Welcome to DOM Manipulation: </h1>
+    <br><br>
+    <a id = "url" href="https://www.google.com">Google</a>
+    <br><br>
+    <button onclick="getAtt()">Get</button>
+    <button onclick="setAtt()">Set</button>
+
+    <script>
+        function getAtt() {
+            let obj = document.getElementById('url');
+            let value = obj.getAttribute("href");
+            console.log(value);
+        }
+
+        function setAtt() {
+            let obj = document.getElementById('url');
+            let value = obj.setAttribute("href", "https://www.youtube.com");
+            console.log(value);
+        }
+    </script>
+</body>
+</html>

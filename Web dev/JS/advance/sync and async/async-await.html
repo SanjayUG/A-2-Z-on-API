@@ -1,0 +1,62 @@
+<!-- async -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>script2</title>
+</head>
+
+<body>
+    <h1>Employee Record: </h1>
+    <script>
+        // create 2 array objects
+        const datas = [
+            { name: "ABC", Profession: "Software Developer" },
+            { name: "XYZ", Profession: "Software Tester" }
+        ];
+
+        // function to get the array objects and display on the body 
+        function getDatas() {
+
+            setTimeout(() => {
+                let output = "";
+                datas.forEach((data, index) => {
+                    output += `<li> ${data.name} - ${data.Profession} </li>`
+                })
+                document.body.innerHTML = output;
+
+            }, 3000);
+        }
+
+        // function to create a new array object
+        function createData(newData) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    datas.push(newData);
+                    let error = false;
+                    if (!error) {
+                        resolve();
+                    } else {
+                        reject("Some Error Occured....");
+                    }
+                }, 5000);
+
+            })
+        }
+
+        async function start() {
+            await createData({name: "Ajay", Profession: "Database Admin"});
+            getDatas();
+        }
+
+        start();
+
+    </script>
+</body>
+
+</html>
