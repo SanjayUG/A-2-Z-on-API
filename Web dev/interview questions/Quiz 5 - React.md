@@ -1,32 +1,42 @@
+
 # Quiz 5 - React
 
 1.  Which static lifecycle method is used to synchronize state with props when a component receives new props?
-    *   getSnapshotBeforeUpdate
-    *   getDerivedStateFromProps
-    *   componentDidUpdate
-    *   componentWillUnmount
+    *   `getSnapshotBeforeUpdate`
+    *   `getDerivedStateFromProps`
+    *   `componentDidUpdate`
+    *   `componentWillUnmount`
 
-    **Answer:** getDerivedStateFromProps
+Answer:
+```
+getDerivedStateFromProps
+```
 
 ---
 
 2.  Which method is called just before the DOM is updated?
-    *   getSnapshotBeforeUpdate
-    *   componentWillUnmount
-    *   componentDidMount
-    *   render
+    *   `getSnapshotBeforeUpdate`
+    *   `componentWillUnmount`
+    *   `componentDidMount`
+    *   `render`
 
-    **Answer:** getSnapshotBeforeUpdate
+Answer:
+```
+getSnapshotBeforeUpdate
+```
 
 ---
 
 3.  What happens if `shouldComponentUpdate` returns `false` after a props change?
-    *   The component continues updating
-    *   The component will still re-render
-    *   The component does not re-render or call `componentDidUpdate`
-    *   The component unmounts
+    *   `The component continues updating`
+    *   `The component will still re-render`
+    *   `The component does not re-render or call componentDidUpdate`
+    *   `The component unmounts`
 
-    **Answer:** The component does not re-render or call `componentDidUpdate`
+Answer:
+```
+The component does not re-render or call componentDidUpdate
+```
 
 ---
 
@@ -36,17 +46,23 @@
     *   `componentDidMount` → `render` → `constructor`
     *   `constructor` → `componentDidMount` → `render`
 
-    **Answer:** `constructor` → `render` → `componentDidMount`
+Answer:
+```
+constructor → render → componentDidMount
+```
 
 ---
 
 5.  In what scenario could `getDerivedStateFromProps` lead to redundant or stale state, and how would you avoid it?
-    *   When directly copying props to state; avoid by only updating state if props and state differ.
-    *   When updating state every render; avoid by unmounting component.
-    *   When using `componentWillUnmount`; avoid by using `getSnapshotBeforeUpdate`.
-    *   When not binding methods; avoid by binding in `constructor`.
+    *   `When directly copying props to state; avoid by only updating state if props and state differ.`
+    *   `When updating state every render; avoid by unmounting component.`
+    *   `When using componentWillUnmount; avoid by using getSnapshotBeforeUpdate.`
+    *   `When not binding methods; avoid by binding in constructor.`
 
-    **Answer:** When directly copying props to state; avoid by only updating state if props and state differ.
+Answer:
+```
+When directly copying props to state; avoid by only updating state if props and state differ.
+```
 
 ---
 
@@ -56,7 +72,10 @@
     *   `componentDidMount`
     *   `shouldComponentUpdate`
 
-    **Answer:** `componentDidMount`
+Answer:
+```
+componentDidMount
+```
 
 ---
 
@@ -66,7 +85,10 @@
     *   `componentDidUpdate`
     *   `componentWillUnmount`
 
-    **Answer:** `getDerivedStateFromProps`
+Answer:
+```
+getDerivedStateFromProps
+```
 
 ---
 
@@ -76,7 +98,10 @@
     *   `snapshot`
     *   `nextProps`
 
-    **Answer:** `nextProps`
+Answer:
+```
+nextProps
+```
 
 ---
 
@@ -86,7 +111,10 @@
     *   `render`
     *   `shouldComponentUpdate`
 
-    **Answer:** `getSnapshotBeforeUpdate`
+Answer:
+```
+getSnapshotBeforeUpdate
+```
 
 ---
 
@@ -96,7 +124,10 @@
     *   `componentDidUpdate`
     *   `constructor`
 
-    **Answer:** `componentWillMount`
+Answer:
+```
+componentWillMount
+```
 
 ---
 
@@ -104,9 +135,12 @@
     *   `componentDidMount`
     *   `componentDidCatch`
     *   `getDerivedStateFromError`
-    *   Both b and c
+    *   `Both b and c`
 
-    **Answer:** Both b and c
+Answer:
+```
+Both b and c
+```
 
 ---
 
@@ -116,17 +150,23 @@
     *   `render`
     *   `componentWillUnmount`
 
-    **Answer:** `render`
+Answer:
+```
+render
+```
 
 ---
 
 13. A component fetches remote data upon mounting and receives new props affecting its data source. Describe a robust pattern for handling both initial and subsequent fetches while preventing memory leaks.
-    *   Use `componentDidMount` for initial fetch, `componentDidUpdate` for prop changes, handle cleanup in `componentWillUnmount`, and use a flag or `AbortController` to prevent setting state after unmounting.
-    *   Use `getDerivedStateFromProps` for all fetching.
-    *   Dispatch fetch in `constructor`, handle abort in `render`.
-    *   Use only `componentWillUnmount`.
+    *   `Use componentDidMount for initial fetch, componentDidUpdate for prop changes, handle cleanup in componentWillUnmount, and use a flag or AbortController to prevent setting state after unmounting.`
+    *   `Use getDerivedStateFromProps for all fetching.`
+    *   `Dispatch fetch in constructor, handle abort in render.`
+    *   `Use only componentWillUnmount.`
 
-    **Answer:** Use `componentDidMount` for initial fetch, `componentDidUpdate` for prop changes, handle cleanup in `componentWillUnmount`, and use a flag or `AbortController` to prevent setting state after unmounting.
+Answer:
+```
+Use componentDidMount for initial fetch, componentDidUpdate for prop changes, handle cleanup in componentWillUnmount, and use a flag or AbortController to prevent setting state after unmounting.
+```
 
 ---
 
@@ -136,7 +176,10 @@
     *   `componentDidUpdate`
     *   `render`
 
-    **Answer:** `componentDidMount`
+Answer:
+```
+componentDidMount
+```
 
 ---
 
@@ -146,7 +189,10 @@
     *   `getDerivedStateFromProps`
     *   `constructor`
 
-    **Answer:** `componentDidUpdate`
+Answer:
+```
+componentDidUpdate
+```
 
 ---
 
@@ -156,7 +202,10 @@
     *   `getSnapshotBeforeUpdate` and `componentDidUpdate`
     *   `shouldComponentUpdate` and `render`
 
-    **Answer:** `getSnapshotBeforeUpdate` and `componentDidUpdate`
+Answer:
+```
+getSnapshotBeforeUpdate and componentDidUpdate
+```
 
 ---
 
@@ -166,7 +215,10 @@
     *   `componentDidMount`
     *   `componentWillUnmount`
 
-    **Answer:** `constructor`
+Answer:
+```
+constructor
+```
 
 ---
 
@@ -176,17 +228,23 @@
     *   `shouldComponentUpdate`
     *   `componentDidUpdate`
 
-    **Answer:** `componentWillUnmount`
+Answer:
+```
+componentWillUnmount
+```
 
 ---
 
 19. What does the `shouldComponentUpdate` method return?
-    *   String
-    *   Boolean
-    *   Number
-    *   Object
+    *   `String`
+    *   `Boolean`
+    *   `Number`
+    *   `Object`
 
-    **Answer:** Boolean
+Answer:
+```
+Boolean
+```
 
 ---
 
@@ -196,7 +254,10 @@
     *   `shouldComponentUpdate`
     *   `getDerivedStateFromProps`
 
-    **Answer:** `componentWillUnmount`
+Answer:
+```
+componentWillUnmount
+```
 
 ---
 
@@ -206,7 +267,10 @@
     *   `shouldComponentUpdate`
     *   `render`
 
-    **Answer:** `getDerivedStateFromProps`
+Answer:
+```
+getDerivedStateFromProps
+```
 
 ---
 
@@ -216,17 +280,23 @@
     *   `render`
     *   `constructor`
 
-    **Answer:** `componentDidUpdate`
+Answer:
+```
+componentDidUpdate
+```
 
 ---
 
 23. What will cause `render` to be called again?
-    *   Only state change
-    *   Only props change
-    *   Either state or props change
-    *   Only `constructor` is called
+    *   `Only state change`
+    *   `Only props change`
+    *   `Either state or props change`
+    *   `Only constructor is called`
 
-    **Answer:** Either state or props change
+Answer:
+```
+Either state or props change
+```
 
 ---
 
@@ -236,7 +306,10 @@
     *   `constructor`
     *   `componentDidUpdate`
 
-    **Answer:** `constructor`
+Answer:
+```
+constructor
+```
 
 ---
 
@@ -246,4 +319,7 @@
     *   `componentDidUpdate`
     *   `constructor`
 
-    **Answer:** `componentDidUpdate`
+Answer:
+```
+componentDidUpdate
+```
