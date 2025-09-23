@@ -1,0 +1,51 @@
+/*
+State management is the practice of storing and organizing your application's data in a single, predictable location, known as the state. When an API sends a response, we store that data in this central state. This makes it easy for the UI (User Interface) to access the information and ensures that when the data changes, the UI automatically updates to reflect the new information without manual intervention.
+
+
+*/
+
+
+// A simple state object to hold our application data
+const appState = {
+  albums: []
+};
+
+// A reference to the UI element we want to update
+const albumListElement = document.getElementById('album-list');
+
+// Function to render the UI based on the current state
+function renderUI() {
+  albumListElement.innerHTML = ''; // Clear the list
+  appState.albums.forEach(album => {
+    const listItem = document.createElement('li');
+    listItem.textContent = `Album ID: ${album.id}, Title: ${album.title}`;
+    albumListElement.appendChild(listItem);
+  });
+}
+
+// Function to fetch data and update the state
+async function fetchAlbums() {
+  const url = 'https://jsonplaceholder.typicode.com/albums';
+
+  try {
+    // Fetch data using Axios
+    const response = await axios.get(url);
+
+    // 1. Update the application's state with the API response data
+    appState.albums = response.data;
+
+    // 2. Call the render function to update the UI
+    renderUI();
+
+    console.log("State updated and UI re-rendered successfully!");
+
+  } catch (error) {
+    console.error('Failed to fetch albums:', error);
+    // Handle errors by updating state or UI with an error message
+    albumListElement.innerHTML = '<li>Failed to load albums. Please try again.</li>';
+  }
+}
+
+// Add an event listener to the button to trigger the fetch
+const fetchButton = document.getElementById('fetch-button');
+fetchButton.addEventListener('click', fetchAlbums);
