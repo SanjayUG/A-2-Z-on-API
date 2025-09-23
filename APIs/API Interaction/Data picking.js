@@ -1,4 +1,4 @@
-Data Picking is the process of extracting specific pieces of information from a larger API response. When an API sends back data, it's often in a structured format like JSON, which contains many different keys and values. Instead of using the entire response, you "pick" or select only the data you need, like a user's name or a product's price, and ignore the rest.
+// Data Picking is the process of extracting specific pieces of information from a larger API response. When an API sends back data, it's often in a structured format like JSON, which contains many different keys and values. Instead of using the entire response, you "pick" or select only the data you need, like a user's name or a product's price, and ignore the rest.
 
 async function getData() {
   const url = 'https://jsonplaceholder.typicode.com/users';

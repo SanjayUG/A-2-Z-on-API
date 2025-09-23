@@ -1,4 +1,4 @@
-Looping is the process of repeatedly performing an action for each item in a collection. When you request data from an API, it often returns a list of items (like a list of users, posts, or products) packaged as a JSON array. Looping through this array allows you to access and process each individual item one by one. This is essential for displaying multiple items on a web page, such as a gallery of images or a list of blog posts.
+// Looping is the process of repeatedly performing an action for each item in a collection. When you request data from an API, it often returns a list of items (like a list of users, posts, or products) packaged as a JSON array. Looping through this array allows you to access and process each individual item one by one. This is essential for displaying multiple items on a web page, such as a gallery of images or a list of blog posts.
 
 async function getPosts() {
   const url = 'https://jsonplaceholder.typicode.com/posts';
