@@ -1,0 +1,57 @@
+/*
+common API scenario refers to the most basic and successful type of interaction you'll have with a web service. This is the foundation of API handling.
+
+Key characteristics:
+
+Status Code: The server returns an HTTP 200 (OK) status, indicating the request was successful and the requested data is in the response body.
+
+Data Format: The response body is structured as JSON (JavaScript Object Notation), making it easy to parse and use in your application.
+
+Mastering this scenario means you can reliably fetch and process data that is exactly where you expect it to be.
+
+
+*/  
+
+
+// script.js
+
+async function getGitHubProfile(username) {
+  // Construct the URL for the GitHub User API
+  const url = `https://api.github.com/users/${username}`;
+
+  try {
+    // 1. Make the GET request using Axios
+    const response = await axios.get(url);
+
+    // 2. Common Scenario Check:
+    // Axios throws an error for non-2xx codes, but we can check the status if needed.
+    // In this simple case, we expect a 200 (OK).
+    if (response.status === 200) {
+      console.log(`--- Successfully fetched data for ${username} ---`);
+
+      // 3. Accessing the JSON data from response.data
+      const userData = response.data;
+      
+      // Data Picking and displaying key details
+      console.log(`Name: ${userData.name || 'N/A'}`);
+      console.log(`Bio: ${userData.bio || 'No bio provided'}`);
+      console.log(`Public Repositories: ${userData.public_repos}`);
+      console.log(`Followers: ${userData.followers}`);
+    }
+
+  } catch (error) {
+    // This block handles errors, including 404 (Not Found) or 500 status codes
+    if (error.response) {
+        console.error(`Error! Status Code: ${error.response.status}`);
+        console.error(`Message: Could not find GitHub user "${username}".`);
+    } else {
+        console.error('An unknown error occurred during the request:', error.message);
+    }
+  }
+}
+
+// Call the function to test with a known user
+getGitHubProfile('octocat'); 
+
+// You can try another user for comparison:
+// getGitHubProfile('torvalds');
