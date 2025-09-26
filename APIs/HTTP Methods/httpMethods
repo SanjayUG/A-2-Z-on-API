@@ -1,0 +1,74 @@
+/*
+HTTP Methods are the verbs of an API request. They tell the server what action you want to perform on a specific resource (the data). The most common methods map directly to CRUD (Create, Read, Update, Delete) operations, forming the backbone of almost all web interactions.
+
+
+*/
+
+// script.js
+
+const API_BASE_URL = 'https://jsonplaceholder.typicode.com/posts';
+
+// --- 1. POST (Create) ---
+async function createNewPost() {
+    console.log("1. Sending POST request to create a new post...");
+    
+    const newPostData = {
+        title: 'Axios Post Title',
+        body: 'This is the content of the new post created with Axios.',
+        userId: 1, // Required for this mock API
+    };
+
+    try {
+        const response = await axios.post(API_BASE_URL, newPostData);
+
+        // The mock API returns the newly created resource (usually with a new ID)
+        console.log("POST Success! New Post Data:", response.data);
+        return response.data.id; // Return the new ID for DELETE
+    } catch (error) {
+        console.error("POST Error:", error.message);
+    }
+}
+
+// --- 2. GET (Read) ---
+async function readPost(id) {
+    console.log(`\n2. Sending GET request to read post ID ${id}...`);
+    try {
+        // GET request is simple, no body is sent
+        const response = await axios.get(`${API_BASE_URL}/${id}`);
+
+        console.log("GET Success! Post Title:", response.data.title);
+    } catch (error) {
+        console.error("GET Error:", error.message);
+    }
+}
+
+// --- 3. DELETE (Delete) ---
+async function deletePost(id) {
+    console.log(`\n3. Sending DELETE request for post ID ${id}...`);
+    try {
+        // DELETE request
+        await axios.delete(`${API_BASE_URL}/${id}`);
+
+        // A successful DELETE usually returns an empty body, but a 200/204 status
+        console.log("DELETE Success! Post has been removed (on the mock server).");
+    } catch (error) {
+        console.error("DELETE Error:", error.message);
+    }
+}
+
+
+// Run the full sequence: Create -> Read -> Delete
+async function runCrudDemo() {
+    const newId = await createNewPost();
+
+    if (newId) {
+        // For the mock API, we use the returned ID to demonstrate the principle
+        await readPost(newId);
+        await deletePost(newId);
+    }
+}
+
+runCrudDemo();
+
+// Note: PUT/PATCH would be similar to POST, but used on a specific resource URL:
+// axios.put(`${API_BASE_URL}/1`, { title: 'Updated Title' });
