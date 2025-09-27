@@ -1,0 +1,61 @@
+/*
+
+To truly master HTTP methods and API handling, you need to practice sending different types of requests using a variety of tools. The three most common tools and methods are Fetch, Axios, and Postman.
+
+*/
+
+// script.js
+
+const API_URL = 'https://jsonplaceholder.typicode.com/posts/1';
+
+// --- 1. Using Native Fetch API ---
+async function fetchDataWithFetch() {
+  console.log("--- Using Fetch ---");
+  try {
+    const response = await fetch(API_URL);
+
+    // 1a. Fetch requires manual check for HTTP errors (e.g., 404, 500)
+    if (!response.ok) {
+      throw new Error(`HTTP Error! Status: ${response.status}`);
+    }
+
+    // 1b. Fetch requires manual call to .json() to parse the body
+    const data = await response.json();
+    console.log(`Fetch Success! Title: ${data.title}`);
+
+  } catch (error) {
+    console.error('Fetch Error:', error.message);
+  }
+}
+
+
+// --- 2. Using Axios Library ---
+async function fetchDataWithAxios() {
+  console.log("\n--- Using Axios ---");
+  try {
+    // 2a. Axios is usually simpler; it combines the request and parsing steps
+    const response = await axios.get(API_URL);
+
+    // 2b. Axios automatically throws an error for non-2xx codes, and data is direct
+    const data = response.data;
+    console.log(`Axios Success! Title: ${data.title}`);
+
+  } catch (error) {
+    // Axios error object is more structured
+    console.error('Axios Error:', error.message);
+  }
+}
+
+
+fetchDataWithFetch();
+fetchDataWithAxios();
+
+
+// --- Postman Note ---
+/* For Postman, you would simply:
+1. Open the application.
+2. Select the 'GET' method.
+3. Paste the URL: https://jsonplaceholder.typicode.com/posts/1
+4. Click 'Send'.
+5. The response (JSON) appears directly in the body section.
+*/
