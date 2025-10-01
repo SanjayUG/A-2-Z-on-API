@@ -1,0 +1,56 @@
+/*
+Compressed Responses (Gzip & Brotli)
+Compressed Responses are used to significantly reduce the size of data transferred from the server to the client. Formats like Gzip and Brotli are standard methods for this compression, which results in faster loading times and lower bandwidth usage.
+
+💡 The Handling "Magic"
+For most modern client-side JavaScript applications (fetch or Axios in a browser):
+
+Client Request: Your browser or Axios automatically sends an Accept-Encoding header (e.g., Accept-Encoding: gzip, deflate, br) to tell the server it can handle compressed data.
+
+Server Response: The server compresses the data (e.g., using Gzip) and sends it back with a Content-Encoding: gzip header.
+
+Automatic Decompression: The browser or the underlying HTTP client library automatically and transparently decompresses the data before it is handed over to your JavaScript code.
+
+The practical takeaway is that for most cases, you treat the response just like standard JSON or text—you do not have to write custom decompression code.
+
+
+*/
+
+
+// script.js
+
+// Using a standard API endpoint that is highly likely to serve compressed data
+const API_URL = 'https://jsonplaceholder.typicode.com/posts/2'; 
+
+async function handleCompressedRequest() {
+  try {
+    console.log("Sending request. The browser automatically requests Gzip/Brotli via 'Accept-Encoding' header...");
+
+    // Axios handles the request and transparently decompresses the data if needed.
+    const response = await axios.get(API_URL); 
+
+    // The data is already decompressed and parsed (if JSON) when it reaches your code.
+    const postData = response.data;
+    
+    console.log(`\n✅ Success! Status: ${response.status}`);
+    
+    // NOTE: You won't see 'Content-Encoding' in the .data; you'd need to inspect
+    // the network tab or response headers directly to confirm compression was used.
+    
+    // We treat the data as normal JSON
+    console.log(`Decompressed Post Title: ${postData.title}`);
+    console.log("No manual decompression code was needed!");
+
+  } catch (error) {
+    console.error('Request Error:', error.message);
+  }
+}
+
+handleCompressedRequest();
+
+/*
+The true challenge of handling compressed responses comes in Node.js environments
+or when the server sends a different data format (e.g., binary streams),
+requiring the use of specialized libraries (like 'zlib' in Node.js) for manual
+decompression. For the browser, it's usually automatic.
+*/
