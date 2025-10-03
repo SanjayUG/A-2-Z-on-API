@@ -98,6 +98,68 @@ fetch('https://via.placeholder.com/300.png')
 
 ---
 
+## 🔊 Non-JSON Data: Audio
+
+| Format | Demo URL |
+|--------|----------|
+| MP3    | `https://www.w3schools.com/html/horse.mp3` |
+
+### JavaScript Fetch Example:
+```js
+fetch('https://www.w3schools.com/html/horse.mp3')
+  .then(res => res.blob())
+  .then(blob => {
+    const url = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    audio.play();
+  });
+```
+
+---
+
+## 📄 Non-JSON Data: PDF
+
+| Format | Demo URL |
+|--------|----------|
+| PDF    | `https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf` |
+
+### JavaScript Fetch Example:
+```js
+fetch('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf')
+  .then(res => res.blob())
+  .then(blob => {
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+  });
+```
+
+---
+
+## 📊 Other Formats & MIME Types
+
+| Format        | MIME Type                     | Typical Use Case                                |
+|---------------|-------------------------------|--------------------------------------------------|
+| HTML          | `text/html`                   | Web pages, rendered directly in browsers         |
+| Plain Text    | `text/plain`                  | Simple text responses, logs, or messages         |
+| XML           | `application/xml` or `text/xml`| Data exchange, especially in legacy systems      |
+| JSON          | `application/json`            | APIs, structured data for web apps               |
+| CSV           | `text/csv`                    | Tabular data, spreadsheets, exports              |
+| PDF           | `application/pdf`             | Documents, reports, forms                        |
+| Image         | `image/png`, `image/jpeg`, etc| Photos, icons, graphics                          |
+| Audio         | `audio/mpeg`, `audio/ogg`, etc| Music, podcasts, sound effects                   |
+| Video         | `video/mp4`, `video/webm`, etc| Streaming, tutorials, media playback             |
+| ZIP           | `application/zip`             | Bundled files, downloads                         |
+| Binary        | `application/octet-stream`    | Raw data, file downloads                         |
+
+### Fetch Example for CSV:
+```js
+fetch('https://people.sc.fsu.edu/~jburkardt/data/csv/airtravel.csv')
+  .then(res => res.text())
+  .then(csv => console.log(csv));
+```
+
+---
+
 ## 🧪 Inspecting Responses in Browser
 
 ### JavaScript Console Example:
