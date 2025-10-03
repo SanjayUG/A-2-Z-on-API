@@ -1,0 +1,73 @@
+/*
+Cookies: Management and Handling
+Cookies are small text files or pieces of data that a server sends to a client (browser) and asks the client to store. The main purpose is to maintain state across multiple requests, primarily for session management (e.g., "This user is logged in") and user tracking.
+
+1. The Cookie Flow
+The handling of cookies is a two-part process managed mostly by the browser:
+
+Stage	Server's Action	Client's Action	Key Header
+Response (Set)	Server includes cookie data in the response.	Browser receives and securely stores the cookie.	Set-Cookie (Response Header)
+Request (Send)	Server waits for the stored cookie.	Browser automatically attaches the stored cookie to all future requests for that domain.	Cookie (Request Header)
+
+2. JavaScript Access and Security
+Access: JavaScript can read and write cookies using the document.cookie API, but this is often discouraged for sensitive data due to security risks.
+
+Security: Most sensitive data (like authentication tokens) is stored in HTTP-only cookies. These cookies are sent back to the server automatically by the browser but are completely inaccessible to JavaScript running on the webpage, protecting them from Cross-Site Scripting (XSS) attacks
+
+*/
+
+
+// script.js
+
+// This is a conceptual API that handles user login and uses cookies for session
+const MOCK_LOGIN_URL = 'https://api.example.com/login';
+const MOCK_PROFILE_URL = 'https://api.example.com/profile'; 
+
+// This setting is CRUCIAL for sending and receiving cookies across different
+// domains (CORS), as it tells the browser to include credentials (like cookies).
+axios.defaults.withCredentials = true; 
+
+
+async function handleCookieFlow() {
+    // --- 1. Login (Server Sets Cookie) ---
+    try {
+        console.log("1. Sending login request (Server is expected to send 'Set-Cookie')...");
+        
+        // POST request to authenticate the user
+        await axios.post(MOCK_LOGIN_URL, { 
+            email: 'user@example.com',
+            password: 'securepassword'
+        });
+
+        console.log("Login Success. The browser has securely stored the session cookie.");
+        
+    } catch (error) {
+        console.error("Login Failed:", error.message);
+        return;
+    }
+
+
+    // --- 2. Subsequent Request (Browser Sends Cookie) ---
+    try {
+        console.log("\n2. Sending profile request (Browser automatically sends the 'Cookie' header)...");
+        
+        // GET request for protected resource
+        const profileResponse = await axios.get(MOCK_PROFILE_URL);
+
+        // The request succeeded because the cookie was automatically sent,
+        // proving the user's logged-in session to the server.
+        console.log(`Profile Data Received! Status: ${profileResponse.status}`);
+        console.log("The server recognized the session from the automatically sent Cookie header.");
+
+    } catch (error) {
+        // If the cookie wasn't sent, the server would likely return a 401 Unauthorized
+        if (error.response && error.response.status === 401) {
+             console.error("Access Denied: Cookie was missing or invalid.");
+        } else {
+             console.error("Profile Fetch Error:", error.message);
+        }
+    }
+}
+
+// NOTE: This example requires a real API that implements cookie-based sessions to fully run.
+handleCookieFlow();
