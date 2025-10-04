@@ -1,0 +1,63 @@
+/*
+Redirections Handling
+A redirection occurs when an API server responds to a request with a 3xx status code (like 301 Moved Permanently or 302 Found). This response doesn't contain the final data; instead, it provides a new URL (in the Location response header) and instructs the client to resend the request to that new location.
+
+How Clients Handle Redirections
+In a web browser environment, both fetch and Axios are generally configured to automatically follow these redirection instructions. This means that:
+
+Your code sends a request to URL A.
+
+The server responds with a 302 to URL B.
+
+The client (browser/Axios) automatically sends a second request to URL B.
+
+Your JavaScript code only receives the final response from URL B.
+
+The key to handling redirections is often knowing the final URL or disabling the automatic following to check the redirect status yourself.
+
+*/
+
+// script.js
+
+// Conceptual URL that redirects from /old-resource to /new-resource
+// We use a general API here as a substitute for a true redirect service.
+const INITIAL_URL = 'https://jsonplaceholder.typicode.com/todos/1'; 
+
+async function handleRedirect() {
+    console.log("Sending request to the initial URL...");
+    
+    try {
+        // By default, Axios will follow the redirect (e.g., from 301/302 to 200)
+        const response = await axios.get(INITIAL_URL);
+        
+        console.log(`\n✅ Final Status: ${response.status} (The status of the final URL)`);
+        
+        // The 'request' object in the response can often reveal the final URL
+        // after all redirects have been followed.
+        const finalUrl = response.request.responseURL;
+        
+        if (finalUrl !== INITIAL_URL) {
+            console.log(`\nRedirection Detected!`);
+            console.log(`Initial URL: ${INITIAL_URL}`);
+            console.log(`Final URL:   ${finalUrl}`);
+        } else {
+            console.log("No redirection was detected for this specific API.");
+        }
+        
+        console.log(`\nFinal Data Title: ${response.data.title}`);
+
+    } catch (error) {
+        console.error('Request Error:', error.message);
+    }
+}
+
+handleRedirect();
+
+/*
+If you were using Axios in a Node.js environment, you could explicitly control 
+redirects by setting:
+axios.get(URL, { 
+    maxRedirects: 0 // Set to 0 to prevent automatic following
+});
+This would allow your code to receive the 3xx status and manually handle the 'Location' header.
+*/
