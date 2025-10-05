@@ -1,0 +1,56 @@
+/*
+The Binary-to-Image Flow
+The solution involves three key steps to convert raw binary data into something the HTML <img> tag can understand:
+
+Configure Request: Tell the client (Axios/fetch) to expect binary data, usually by setting responseType: 'arraybuffer'.
+
+Create Blob: Convert the received binary data buffer into a Blob (Binary Large Object). You must specify the image's correct MIME type (e.g., image/png).
+
+Create Object URL: Use URL.createObjectURL() to generate a temporary, local URL that points to the data in the Blob. This is the URL you assign to the src of your <img> element.
+
+
+*/
+
+// script.js
+
+// Using a conceptual URL that returns raw image data (e.g., a PNG)
+const IMAGE_API_URL = 'https://some-api.com/image/logo.png'; 
+
+async function displayRawImage() {
+    const imgElement = document.getElementById('image-placeholder');
+
+    try {
+        console.log("1. Fetching raw image data...");
+        
+        // CRITICAL STEP: Set responseType to arraybuffer to handle binary data
+        const response = await axios.get(IMAGE_API_URL, { 
+            responseType: 'arraybuffer' 
+        });
+
+        // The response header 'Content-Type' tells us the image type (e.g., image/png)
+        const contentType = response.headers['content-type'] || 'image/png';
+        
+        console.log(`2. Received binary data with Content-Type: ${contentType}`);
+
+        // 3. Create a Blob from the ArrayBuffer data
+        const imageBlob = new Blob([response.data], { 
+            type: contentType 
+        });
+
+        // 4. Create a temporary local URL from the Blob
+        const imageUrl = URL.createObjectURL(imageBlob);
+
+        // 5. Assign the Object URL to the <img> element's src
+        imgElement.src = imageUrl;
+        
+        console.log("3. Image successfully rendered using local Object URL.");
+
+    } catch (error) {
+        console.error('Failed to display image:', error.message);
+        imgElement.alt = "Failed to load image.";
+    }
+}
+
+// NOTE: This example requires an actual API that returns a raw image.
+// If the URL above returns JSON, this code will fail as expected.
+displayRawImage();
