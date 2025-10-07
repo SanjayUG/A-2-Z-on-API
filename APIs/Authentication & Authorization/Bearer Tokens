@@ -1,0 +1,65 @@
+/*
+A Bearer Token is a credential that grants the holder (the "bearer") access to a protected resource. It is the core of modern authentication standards like OAuth 2.0 and is typically a JWT (JSON Web Token).
+
+The primary rule is: Whoever holds the token can access the resource.
+
+1. Sending the Token
+The token must be included in the request using the Authorization request header with the word Bearer followed by a space.
+
+Format: Authorization: Bearer <YOUR_ACCESS_TOKEN>
+
+2. Managing Token Storage
+Deciding where to store the token on the client-side is a key security decision:
+
+Local Storage / Session Storage:
+
+Pros: Easy to access and manage with JavaScript. Persists across browser restarts (Local Storage).
+
+Cons: Highly vulnerable to XSS (Cross-Site Scripting) attacks, as any JavaScript on the page can read the token. Not recommended for sensitive access tokens.
+
+HTTP-only Cookies:
+
+Pros: Tokens are sent automatically with every request. They are inaccessible to client-side JavaScript, making them highly resistant to XSS attacks. Recommended for refresh tokens and sensitive data.
+
+Cons: Can be vulnerable to CSRF (Cross-Site Request Forgery) attacks unless proper anti-CSRF measures are implemented.
+
+
+
+
+*/
+
+
+// script.js
+
+const PROTECTED_API_URL = 'https://api.example.com/protected/user/data'; 
+
+// 1. Storage (Concept): Pretend this token was retrieved from the login response
+// and is now stored (e.g., in a secure, memory-based state or an HTTP-only cookie).
+const accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.MockBearerTokenExample'; 
+
+
+async function fetchDataWithBearerToken() {
+  try {
+    console.log("Sending request with Bearer Token in the Authorization header...");
+    
+    const response = await axios.get(PROTECTED_API_URL, {
+      // 2. CRITICAL STEP: Configure the Authorization header
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    
+    console.log(`\n✅ Access Granted! Status: ${response.status}`);
+    console.log("Protected data retrieved successfully.");
+
+  } catch (error) {
+    // If the token is expired or invalid, the server typically returns a 401 Unauthorized
+    if (error.response && error.response.status === 401) {
+      console.error('🛑 Authorization Failed:', 'Token is missing, expired, or invalid.');
+    } else {
+      console.error('Request Error:', error.message);
+    }
+  }
+}
+
+fetchDataWithBearerToken();
