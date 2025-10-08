@@ -1,0 +1,60 @@
+/*
+1. OAuth (1.0)
+OAuth (Open Authorization) was the original protocol designed to allow a user to grant a third-party application limited access to their resources (e.g., on Twitter or Google) without sharing their password. It has largely been replaced by its successor due to its complexity and evolving security needs. You rarely encounter OAuth 1.0 in new development today.
+
+2. OAuth 2.0 (Authorization Framework)
+OAuth 2.0 is the industry-standard authorization framework. Crucially, it is not an authentication protocol itself; its primary job is delegated access.
+
+Core Goal: To allow a client application (e.g., a mobile app) to gain access to a user's resources hosted by a different service (e.g., a Facebook or Google account) without the user providing their password to the client app.
+
+The Result: After a successful flow, the client receives an Access Token (often a JWT) and sometimes a Refresh Token. This Access Token is then used as the Bearer Token for making authorized API calls.
+
+3. JWT (JSON Web Tokens)
+A JWT is the most common format for the Access Tokens used in an OAuth 2.0 flow. It is a compact, URL-safe means of representing claims (statements) to be transferred between two parties.
+
+Self-Contained: A JWT carries all the necessary user and permission information within itself, minimizing the need for the server to constantly query a database.
+
+Structure: A JWT has three parts, separated by dots (.):
+
+Header: Specifies the token type (JWT) and the signing algorithm (e.g., HS256).
+
+Payload: Contains the claims (e.g., user ID, username, expiration time).
+
+Signature: Used by the server to cryptographically verify that the token has not been tampered with.
+
+*/
+
+
+// script.js
+
+const PROTECTED_RESOURCE = 'https://api.example.com/api/v2/photos'; 
+
+// This token was secured after the user completed the OAuth 2.0 process
+const jwtAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.Mock-JWT-Content.SignatureHere'; 
+
+
+async function accessOAuthProtectedResource() {
+  try {
+    console.log("Sending request using the JWT (as a Bearer Token) acquired from OAuth 2.0...");
+    
+    // We send the token via the Authorization: Bearer header
+    const response = await axios.get(PROTECTED_RESOURCE, {
+      headers: {
+        'Authorization': `Bearer ${jwtAccessToken}`
+      }
+    });
+    
+    console.log(`\n✅ Access Granted! Status: ${response.status}`);
+    console.log("Resources accessed via delegated OAuth 2.0 permission.");
+
+  } catch (error) {
+    // A 403 Forbidden or 401 Unauthorized means the token is invalid or lacks scope
+    if (error.response && error.response.status >= 401) {
+      console.error('🛑 Authorization Denied:', 'Token is missing or permissions are insufficient.');
+    } else {
+      console.error('Request Error:', error.message);
+    }
+  }
+}
+
+accessOAuthProtectedResource();
