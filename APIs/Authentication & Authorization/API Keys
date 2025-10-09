@@ -1,0 +1,58 @@
+/*
+An API Key is a unique, secret string of characters that a service provides to identify and authenticate a specific application or user. API keys are simple to implement and are primarily used for tracking usage, rate limiting, and basic authorization.
+
+1. Inclusion Methods
+API keys are sent to the server in one of two ways:
+
+Query Parameter (Less Secure): Appended directly to the URL (e.g., ?api_key=your_key). This is simple but makes the key easily visible in browser history, logs, and server logs.
+
+Request Header (Recommended): Included as a custom request header. This is the preferred method as it keeps the key separate from the URL path.
+
+2. Header Inclusion Mechanism
+When using the header method, you typically use a specific header name defined by the API, such as X-API-Key or sometimes a custom Authorization header without a scheme like Bearer.
+
+Format: X-API-Key: <YOUR_SECRET_KEY>
+
+⚠️ Security Note: Since API keys often grant unrestricted access, they should be treated like passwords and never exposed directly in client-side code for production use. They should be managed securely (e.g., via a proxy server).
+
+
+
+*/
+
+
+// script.js
+
+const PROTECTED_SERVICE_URL = 'https://api.external-service.com/data'; 
+
+// 1. The API Key provided by the service
+const SERVICE_API_KEY = 'a8s7d6f5_yOuR_uNiQuE_KeY_12345'; 
+// The custom header name is often documented by the API provider
+const HEADER_NAME = 'X-API-Key'; 
+
+
+async function fetchDataWithApiKey() {
+  try {
+    console.log(`Sending request with API Key in the custom header (${HEADER_NAME})...`);
+    
+    const response = await axios.get(PROTECTED_SERVICE_URL, {
+      // 2. Configure the custom header
+      headers: {
+        [HEADER_NAME]: SERVICE_API_KEY 
+        // Note the use of bracket notation for a variable header name
+      }
+    });
+    
+    console.log(`\n✅ Access Granted! Status: ${response.status}`);
+    console.log("Data successfully retrieved using the API Key.");
+
+  } catch (error) {
+    // API key errors often return a 401 Unauthorized or 403 Forbidden
+    if (error.response && error.response.status >= 401) {
+      console.error('🛑 Authorization Failed:', 'Invalid or missing API Key.');
+    } else {
+      console.error('Request Error:', error.message);
+    }
+  }
+}
+
+fetchDataWithApiKey();
