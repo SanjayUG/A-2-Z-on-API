@@ -1,0 +1,98 @@
+/*
+Effective token management is key to maintaining a secure and seamless user experience. It involves using multiple token types to balance security and usability.
+
+1. Session Cookies
+A Session Cookie is a small piece of data used to maintain the authenticated state of a user. Once a user logs in, the server sends a cookie containing a session ID or a token.
+
+Role: The cookie is automatically included by the browser in subsequent requests, proving the user's session is still active.
+
+Best Practice: For security, session cookies should almost always be set as HTTP-only. This prevents client-side JavaScript from accessing the cookie, protecting it from XSS (Cross-Site Scripting) attacks.
+
+2. Refresh Tokens
+A Refresh Token is a long-lived, high-privilege token used only to request a new, short-lived Access Token after the old one expires.
+
+Security Benefit: By keeping the Access Token's lifespan short (e.g., 15 minutes), the potential window for an attacker to use a stolen token is minimized.
+
+Storage: Refresh tokens are usually stored in a secure, HTTP-only cookie. This protects the long-lived token from JavaScript access.
+
+3. The Token Refresh Flow
+Request: Client makes an API call with the Access Token → Server responds with 401 Unauthorized (because the token expired).
+
+Refresh: Client intercepts the 401 error and uses the Refresh Token (from the HTTP-only cookie) to request a new Access Token from a dedicated /refresh endpoint.
+
+Retry: Client receives the new Access Token, updates it locally, and retries the original API call.
+
+*/
+
+
+
+// script.js
+
+const PROTECTED_DATA_URL = 'https://api.example.com/data'; 
+const TOKEN_REFRESH_URL = 'https://api.example.com/token/refresh'; 
+
+// Simulate where the current Access Token is stored
+let currentAccessToken = 'short-lived-token-expired'; 
+
+// Simulate getting the Refresh Token (usually done by the browser from a cookie)
+const getRefreshToken = () => 'long-lived-secure-cookie-token'; 
+
+
+// Utility function to simulate the refresh API call
+async function refreshAccessToken() {
+    console.log("-> 🔄 Refreshing token using stored Refresh Token...");
+    try {
+        // Axios automatically sends the Refresh Token from the HTTP-only cookie here
+        const response = await axios.post(TOKEN_REFRESH_URL, {
+            // Include refresh token if needed, or rely on the cookie
+            refreshToken: getRefreshToken() 
+        });
+
+        // Update the local Access Token with the new one from the response
+        currentAccessToken = response.data.newAccessToken; 
+        console.log("-> ✅ Token refreshed successfully!");
+        return true;
+
+    } catch (error) {
+        console.error("-> 🛑 Token refresh failed. User must log in again.");
+        return false;
+    }
+}
+
+
+async function secureApiCall(url) {
+    try {
+        console.log(`1. Attempting API call with token: ${currentAccessToken.substring(0, 10)}...`);
+        
+        const response = await axios.get(url, {
+            headers: {
+                'Authorization': `Bearer ${currentAccessToken}`
+            }
+        });
+        
+        console.log(`2. ✅ Status ${response.status}: Data received!`);
+        return response.data;
+
+    } catch (error) {
+        // 3. Catch a 401 Unauthorized error
+        if (error.response && error.response.status === 401) {
+            console.log("3. ⚠️ Received 401 Unauthorized. Token has expired.");
+            
+            // Attempt to get a new token
+            const isRefreshed = await refreshAccessToken();
+            
+            if (isRefreshed) {
+                console.log("4. Retrying original request with new Access Token...");
+                // 5. Retry the original request recursively
+                return secureApiCall(url);
+            }
+        }
+        
+        // Final failure state
+        console.error("6. Request failed permanently.");
+        return null;
+    }
+}
+
+// Start the sequence
+secureApiCall(PROTECTED_DATA_URL);
