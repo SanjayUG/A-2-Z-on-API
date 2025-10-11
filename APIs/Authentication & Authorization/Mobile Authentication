@@ -1,0 +1,87 @@
+/*
+Mobile Authentication refers to the techniques and flows designed to securely verify a user's identity specifically within a native mobile application (iOS/Android). These flows often differ from traditional web authentication due to the unique environment (no browser cookies, deep linking capabilities, OS-level security).
+
+1. The Key Difference: Storage
+Since native mobile apps don't rely on the browser's cookie jar, Access Tokens and Refresh Tokens must be stored elsewhere securely:
+
+iOS: Use the Keychain service.
+
+Android: Use the Keystore system.
+
+2. Common Mobile-Specific Flows
+The most common method for mobile apps is the Authorization Code Flow with Proof Key for Code Exchange (PKCE), which is an extension of OAuth 2.0 designed to be secure on public clients (like mobile apps) where a client secret cannot be stored safely.
+
+PKCE Flow (Simplified)
+Client Generates Secret: The mobile app creates a temporary secret (code_verifier) and a hashed version (code_challenge).
+
+Redirect to Auth Server: The app sends the user to the authorization server (e.g., Google's login page) along with the code_challenge.
+
+User Logs In: The user logs in and the server sends an Authorization Code back to the app via a deep link (a special URL that opens the app).
+
+Token Exchange: The app sends the Authorization Code and the original secret code_verifier to the token endpoint.
+
+Validation & Tokens: The server verifies the code_verifier against the code_challenge it stored. If they match, it issues the final Access Token and Refresh Token.
+
+Secure Storage: The app immediately stores both tokens in the mobile device's Keychain/Keystore
+*/
+
+// This is conceptual code for a React Native or similar mobile framework.
+
+// The native module that interfaces with the secure OS storage
+import { secureStorage } from 'react-native-keychain'; 
+
+const API_ENDPOINT = 'https://api.mobile-service.com/user/profile';
+
+// --- 1. Secure Storage Utility (Conceptual) ---
+// In a real app, this wraps the native Keychain/Keystore
+const tokenManager = {
+    saveToken: async (key, token) => {
+        // Saves the token securely to the device's storage
+        await secureStorage.setGenericPassword(key, token); 
+        console.log(`Token saved to secure storage: ${key}`);
+    },
+    getToken: async (key) => {
+        // Retrieves the token
+        const creds = await secureStorage.getGenericPassword(key);
+        return creds ? creds.password : null;
+    }
+};
+
+// --- 2. API Call Logic ---
+async function fetchMobileData() {
+    // 1. Retrieve the Access Token from the secure OS storage
+    const accessToken = await tokenManager.getToken('accessToken');
+
+    if (!accessToken) {
+        console.error("🛑 No Access Token found. Please re-authenticate.");
+        return;
+    }
+
+    try {
+        console.log("Sending request with Bearer Token retrieved from Keychain/Keystore...");
+        
+        // 2. Use a mobile-optimized HTTP client (often not Axios/Fetch directly in RN)
+        const response = await fetch(API_ENDPOINT, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+            }
+        });
+        
+        if (response.status === 200) {
+            console.log(`\n✅ Status 200: Profile data received on mobile.`);
+        } else if (response.status === 401) {
+            // 3. Handle token expiry by triggering the PKCE refresh flow
+            console.warn("⚠️ Token expired. Initiating token refresh (PKCE flow needed).");
+        }
+
+    } catch (error) {
+        console.error('Mobile API Fetch Error:', error);
+    }
+}
+
+// Assume the login process has already saved the tokens:
+// tokenManager.saveToken('accessToken', 'pkce-issued-access-token');
+// tokenManager.saveToken('refreshToken', 'pkce-issued-refresh-token');
+
+fetchMobileData();
