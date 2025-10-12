@@ -1,0 +1,59 @@
+/*
+Rate Limiting
+Rate Limiting is a defensive mechanism used by APIs to control the number of requests a single user or application can make to a server within a defined period (e.g., 100 requests per minute). It is essential for protecting the API from resource exhaustion, abuse, and denial-of-service (DoS) attacks, ensuring fair usage for all clients.
+
+💡 Client-Side Handling
+When a client exceeds the limit, the server responds with an HTTP 429 Too Many Requests status code. Good client-side code must recognize this status and stop making immediate requests. The server typically provides guidance on when to try again using specific response headers:
+
+Retry-After: Tells the client exactly how many seconds to wait before making the next request.
+
+X-RateLimit-Limit: Shows the total number of allowed requests in the current window.
+
+X-RateLimit-Remaining: Shows how many requests are left in the current window.
+
+To handle this gracefully, the client should implement an Exponential Backoff strategy, where it waits for an increasingly longer duration between retries, starting with the time specified in the Retry-After header.
+
+
+
+
+*/
+
+// script.js
+
+const LIMITED_API_URL = 'https://api.example.com/protected/status'; 
+
+async function makeRateLimitedRequest() {
+  try {
+    console.log("Sending request...");
+    
+    // Simulate a request that might fail due to rate limiting
+    const response = await axios.get(LIMITED_API_URL);
+    
+    console.log(`\n✅ Success! Status: ${response.status}`);
+    console.log("Data retrieved successfully.");
+
+  } catch (error) {
+    if (error.response && error.response.status === 429) {
+      console.error("🛑 Rate Limit Exceeded (429 Too Many Requests)!");
+      
+      const retryAfter = error.response.headers['retry-after'];
+      
+      if (retryAfter) {
+        // The server provides the wait time
+        console.log(`Please wait for ${retryAfter} seconds before trying again.`);
+        
+        // In a real application, you would use 'setTimeout' here to pause
+        // further requests for the 'retryAfter' duration.
+        // setTimeout(() => makeRateLimitedRequest(), parseInt(retryAfter) * 1000);
+      } else {
+        // Fallback or general rate limit message
+        console.log("Server did not specify a wait time. Retrying later is recommended.");
+      }
+    } else {
+      // Handle other errors (404, 500, etc.)
+      console.error('An unexpected error occurred:', error.message);
+    }
+  }
+}
+
+makeRateLimitedRequest();
