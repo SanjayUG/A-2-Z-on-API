@@ -1,0 +1,50 @@
+/*
+Throttling is a server-side technique used to deliberately slow down a service or API by limiting how often a client can successfully make a request within a specific timeframe. While similar to rate limiting, throttling is often applied to prevent specific users or applications from monopolizing resources, ensuring that the server maintains stability and responsiveness for all users.
+
+The Difference from Rate Limiting
+Rate Limiting is a hard limit; once exceeded, the server stops serving the requests immediately and returns a 429 Too Many Requests error.
+
+Throttling is a softer control; the server might still accept the request but respond with a slightly slower speed or temporarily queue the requests to prevent an immediate overload, often enforcing a consistent delay between requests.
+
+
+*/
+
+// script.js
+
+const THROTTLED_API_URL = 'https://api.example.com/data/frequently-called'; 
+
+async function makeThrottledRequest() {
+  try {
+    console.log("Sending request to a potentially throttled endpoint...");
+    
+    // Attempt the API call
+    const response = await axios.get(THROTTLED_API_URL);
+    
+    console.log(`\n✅ Success! Status: ${response.status}`);
+    console.log("Data retrieved.");
+
+  } catch (error) {
+    if (error.response && error.response.status === 429) {
+      console.error("🛑 Request Throttled (429 Too Many Requests)!");
+      
+      const retryAfter = error.response.headers['retry-after'];
+      
+      if (retryAfter) {
+        // The server is telling us how long to wait before the next attempt
+        const waitTime = parseInt(retryAfter) * 1000;
+        console.log(`Server requested a deliberate delay. Waiting for ${waitTime / 1000} seconds...`);
+        
+        // In a complex application, a queuing system or an exponential backoff
+        // logic is triggered here to handle the enforced delay.
+        // setTimeout(() => makeThrottledRequest(), waitTime);
+      } else {
+        console.log("Throttling detected, but no 'Retry-After' header provided. Retrying with caution.");
+      }
+    } else {
+      // Handle other non-throttle errors
+      console.error('An unexpected error occurred:', error.message);
+    }
+  }
+}
+
+makeThrottledRequest();
