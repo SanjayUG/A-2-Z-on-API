@@ -1,0 +1,67 @@
+/*
+Caching Strategies
+Caching is storing copies of data so that future requests can be served faster than by fetching the data from its original source (the server or database). Effective caching involves strategies on both the client (browser/app) and the server.
+
+1. Client-Side Caching (Browser) 🖥️
+This strategy uses browser mechanisms to avoid sending a request to the server altogether, or to verify if a local copy is still valid.
+
+Browser Cache (HTTP Caching): Controlled by Response Headers set by the server, like Cache-Control (e.g., max-age=3600) and ETag. The browser automatically handles storing the response and checking its freshness before making a network call.
+
+Application Cache (In-Memory/Local Storage): Directly managed by JavaScript code. This is useful for storing non-sensitive data needed immediately upon application load.
+
+Strategy: Store the API response data in memory or Local Storage. Before fetching, check if the data exists and if its stored timestamp is still valid. If valid, use the local copy.
+
+
+2. Server-Side Caching (API/Database) ⚙️
+This strategy is implemented on the server to reduce the load on the database or the core business logic.
+
+Database Query Caching: Storing the results of frequent database queries (e.g., in Redis or Memcached).
+
+Reverse Proxy Caching (e.g., Varnish): Caching full API responses at the network edge before they even reach your application server. This is very fast.
+
+*/
+
+// script.js
+
+const API_URL = 'https://jsonplaceholder.typicode.com/todos/5'; 
+const CACHE_KEY = 'todoItem5';
+const CACHE_LIFETIME_MS = 60 * 1000; // Cache expires after 60 seconds
+
+async function fetchWithCache() {
+  // 1. Check if valid data exists in Local Storage
+  const cachedData = JSON.parse(localStorage.getItem(CACHE_KEY));
+  const now = Date.now();
+
+  if (cachedData && (now - cachedData.timestamp < CACHE_LIFETIME_MS)) {
+    console.log("✅ Using cached data (fresh).");
+    return cachedData.data;
+  }
+
+  // 2. If no valid cache, fetch from the API
+  try {
+    console.log("⚠️ Cache expired or missing. Fetching new data from API...");
+    
+    const response = await axios.get(API_URL);
+    const apiData = response.data;
+
+    // 3. Store the new data along with a timestamp
+    const newCacheEntry = {
+      data: apiData,
+      timestamp: now
+    };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(newCacheEntry));
+    
+    console.log("✅ New data fetched and stored in cache.");
+    return apiData;
+
+  } catch (error) {
+    console.error('Failed to fetch data:', error.message);
+    return null;
+  }
+}
+
+fetchWithCache().then(data => {
+  if (data) {
+    console.log(`\nResult Title: ${data.title}`);
+  }
+});
