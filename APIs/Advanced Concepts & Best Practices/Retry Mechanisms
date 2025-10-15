@@ -1,0 +1,67 @@
+/*
+A retry mechanism is application logic designed to automatically re-attempt a failed API request. This is crucial for handling transient (temporary) failures that are expected to resolve themselves quickly, such as momentary network outages, temporary server load spikes, or connection timeouts.
+
+💡 Core Components
+Identify Retryable Errors: Only attempt retries for errors that are transient, typically:
+
+503 Service Unavailable or 504 Gateway Timeout.
+
+Network errors (e.g., connection lost).
+
+429 Too Many Requests (if combined with a backoff strategy).
+
+DO NOT retry for permanent errors like 404 Not Found or 400 Bad Request.
+
+Limit Attempts: Always set a maximum number of retries (e.g., 3 to 5) to prevent infinite loops and resource waste.
+
+Backoff Strategy: Implement a delay between retries, often using Exponential Backoff (see next section) to avoid immediately overwhelming the server.
+
+
+
+
+*/
+
+
+// script.js
+
+const API_URL = 'https://api.example.com/data/unstable'; // Conceptual URL
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1000; // 1 second delay
+
+// Utility function to introduce a pause
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function fetchWithRetry(url, attempt = 1) {
+    console.log(`\nAttempting to fetch data (Attempt ${attempt}/${MAX_RETRIES})...`);
+
+    try {
+        const response = await axios.get(url);
+        
+        // Success
+        console.log(`✅ Success! Status: ${response.status}`);
+        return response.data;
+
+    } catch (error) {
+        const status = error.response ? error.response.status : 'Network Error';
+        
+        // 1. Check if the error is retryable and if we have attempts left
+        const isTransientError = (status === 503 || status === 504 || status === 429 || status === 'Network Error');
+        
+        if (attempt < MAX_RETRIES && isTransientError) {
+            console.warn(`⚠️ Attempt failed (Status: ${status}). Retrying in ${RETRY_DELAY_MS / 1000}s...`);
+            
+            // 2. Introduce a delay (Backoff)
+            await sleep(RETRY_DELAY_MS);
+            
+            // 3. Re-attempt the request
+            return fetchWithRetry(url, attempt + 1);
+        }
+
+        // 4. Final Failure: If all retries are exhausted or it's a non-retryable error
+        console.error(`\n🛑 Final failure after ${attempt} attempts. Status: ${status}`);
+        throw new Error(`API failed after all retries. Status: ${status}`);
+    }
+}
+
+// NOTE: This requires a real API that simulates transient failures (e.g., returning 503 sometimes).
+fetchWithRetry(API_URL);
