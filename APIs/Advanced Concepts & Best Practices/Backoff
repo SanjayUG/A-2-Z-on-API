@@ -1,0 +1,69 @@
+/*
+
+Backoff is a crucial technique used within a retry mechanism where the client gradually increases the waiting time between consecutive re-attempts to contact a server. Its primary goal is to prevent the client from overwhelming the server with immediate, repeated requests during a failure state, which would worsen the problem.
+
+Exponential Backoff
+The most common and effective form is Exponential Backoff. The delay time grows exponentially after each failed attempt:
+
+Delay Formula: Delay=Base Delay×2 
+(attempt−1)
+ 
+
+Example: If the base delay is 1 second, the sequence is 1s,2s,4s,8s, etc.
+
+Many implementations also add a small amount of random jitter to the delay to ensure many clients don't all retry at the exact same moment, which could cause another server spike.
+
+
+*/
+
+
+// script.js
+
+const API_URL = 'https://api.example.com/data/flaky-service'; // Conceptual URL
+const MAX_RETRIES = 5;
+const BASE_DELAY_MS = 500; // Start with 0.5 seconds
+
+// Utility function to introduce a pause
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+async function fetchWithExponentialBackoff(url, attempt = 1) {
+    console.log(`\nAttempting to fetch data (Attempt ${attempt}/${MAX_RETRIES})...`);
+
+    try {
+        const response = await axios.get(url);
+        
+        // Success
+        console.log(`✅ Success! Status: ${response.status}`);
+        return response.data;
+
+    } catch (error) {
+        const status = error.response ? error.response.status : 'Network Error';
+        
+        // 1. Identify retryable errors (e.g., 503, 504, 429, Network Error)
+        const isTransientError = (status === 503 || status === 504 || status === 429 || status === 'Network Error');
+        
+        if (attempt < MAX_RETRIES && isTransientError) {
+            // 2. Calculate the exponential delay time
+            const delay = BASE_DELAY_MS * Math.pow(2, attempt - 1);
+            
+            // Add a small random component (jitter) to the delay
+            const jitter = Math.random() * BASE_DELAY_MS; 
+            const finalDelay = Math.round(delay + jitter);
+            
+            console.warn(`⚠️ Attempt failed (Status: ${status}). Waiting for ${finalDelay / 1000}s (Exponential Backoff)...`);
+            
+            // 3. Pause before re-attempting
+            await sleep(finalDelay);
+            
+            // 4. Re-attempt the request
+            return fetchWithExponentialBackoff(url, attempt + 1);
+        }
+
+        // 5. Final Failure: If all retries are exhausted or it's a non-retryable error
+        console.error(`\n🛑 Final failure after ${attempt} attempts. Status: ${status}`);
+        throw new Error(`API failed after all retries. Status: ${status}`);
+    }
+}
+
+// NOTE: This requires a real API that simulates transient failures.
+fetchWithExponentialBackoff(API_URL);
