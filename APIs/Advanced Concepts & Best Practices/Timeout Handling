@@ -1,0 +1,51 @@
+/*
+Timeout Handling is the practice of setting a maximum amount of time a request is allowed to wait for a server response. If the server doesn't respond within this limit, the request is automatically canceled, and an error is returned to the application. This is essential for maintaining application responsiveness and improving user experience, as it prevents the UI from freezing indefinitely while waiting on a slow or stuck network call.
+
+Implementation
+The timeout logic is usually configured within the HTTP client itself (like Axios or fetch). When a timeout occurs, it typically triggers a distinct error that your application can specifically catch and handle, often by informing the user or initiating a retry.
+
+Client Configuration: You define the maximum time (in milliseconds) the request should wait.
+
+Result: If the limit is reached, the client library aborts the request and throws a TimeoutError.
+
+
+*/
+
+
+// script.js
+
+// Conceptual URL that might respond slowly or hang
+const SLOW_API_URL = 'https://api.example.com/data/slow-response'; 
+const TIMEOUT_MS = 3000; // Set timeout to 3 seconds (3000 milliseconds)
+
+async function fetchWithTimeout() {
+  try {
+    console.log(`Sending request with a ${TIMEOUT_MS / 1000} second timeout...`);
+
+    // Use the 'timeout' property in the Axios config
+    const response = await axios.get(SLOW_API_URL, {
+      timeout: TIMEOUT_MS 
+    });
+    
+    // Success: If the response is received before the timeout
+    console.log(`\n✅ Success! Status: ${response.status}`);
+    console.log("Data received within the time limit.");
+
+  } catch (error) {
+    // Check if the error is specifically a timeout error
+    if (axios.isCancel(error)) {
+      // Axios marks timeouts as cancel errors by default
+      console.error(`\n🛑 Timeout Error: Request took longer than ${TIMEOUT_MS / 1000} seconds and was canceled.`);
+      // Implement retry logic or show a user-friendly message
+      // Example: fetchWithRetry(SLOW_API_URL);
+    } else if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+      // Sometimes, a specific 'ECONNABORTED' code is used for timeout
+      console.error(`\n🛑 Timeout Error: Connection aborted after ${TIMEOUT_MS / 1000} seconds.`);
+    } else {
+      // Handle other network or HTTP errors
+      console.error('An unexpected error occurred:', error.message);
+    }
+  }
+}
+
+fetchWithTimeout();
