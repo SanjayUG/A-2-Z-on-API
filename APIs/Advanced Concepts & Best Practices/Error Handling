@@ -1,0 +1,68 @@
+/*
+Error Handling is the systematic process of anticipating, detecting, and responding to failures that occur during an API request. Robust error management is crucial for creating stable applications and providing a good user experience by giving clear feedback instead of crashing.
+
+1. Categorizing Failures
+Good error handling distinguishes between different types of API failures:
+
+Network Errors (Transient): Occur before the request even reaches the server (e.g., connection issues, DNS failure). These should trigger retry logic with backoff.
+
+Client Errors (4xx): The client is at fault (e.g., 400 Bad Request, 401 Unauthorized, 404 Not Found). These are typically non-retryable and require user interaction (e.g., showing a login screen for a 401).
+
+Server Errors (5xx): The server failed to fulfill a valid request (e.g., 500 Internal Server Error, 503 Service Unavailable). These are often transient and can be handled with retries.
+
+2. Implementation with Axios
+Axios centralizes error handling using the standard JavaScript try...catch block. The error object it returns is highly structured, making it easy to check the HTTP status code (error.response.status) or if the error was network-related (error.request).
+
+
+*/
+
+
+// script.js
+
+const API_ENDPOINT = 'https://api.example.com/check/error-scenarios'; // Conceptual URL
+
+async function handleApiFailures() {
+  try {
+    console.log("Sending request...");
+    
+    // Assume this request will result in an error (e.g., 401, 404, or network failure)
+    const response = await axios.get(API_ENDPOINT);
+    
+    // This line runs only on a 2xx success
+    console.log(`\n✅ Success! Status: ${response.status}`);
+
+  } catch (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code 
+      // that falls out of the range of 2xx (e.g., 4xx or 5xx)
+      const status = error.response.status;
+      
+      console.log(`\n--- HTTP Error Detected ---`);
+      console.log(`Status Code: ${status}`);
+      
+      if (status === 401) {
+        console.error("🛑 401 Unauthorized: User session expired. Redirecting to login.");
+        // Action: Clear user data and redirect
+      } else if (status === 404) {
+        console.error("🛑 404 Not Found: The requested resource does not exist.");
+        // Action: Display an appropriate message to the user
+      } else if (status >= 500) {
+        console.error("⚠️ Server Error (5xx): Retrying the request is recommended.");
+        // Action: Initiate a retry mechanism
+      }
+      
+    } else if (error.request) {
+      // The request was made but no response was received (e.g., network timeout)
+      console.error("\n--- Network Error Detected ---");
+      console.error("❌ No response received. Check internet connection or API availability.");
+      // Action: Display a network error message and offer a refresh button
+      
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.error("\n--- Setup Error Detected ---");
+      console.error('An unexpected error occurred:', error.message);
+    }
+  }
+}
+
+handleApiFailures();
