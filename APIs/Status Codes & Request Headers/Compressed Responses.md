@@ -1,0 +1,23 @@
+# HTTP Request Components
+
+## Request Headers
+Request Headers are key-value pairs of metadata sent along with the HTTP request (like an envelope containing a letter). They provide the server with context about the request or the client.
+
+### User Information
+Headers like `User-Agent` (browser/OS info) and the client's IP address (derived from network headers) are automatically sent by the browser or environment and interpreted by the server.
+
+### Common Use
+You manually configure headers for things like:
+
+- **Authorization**: Sending a token to prove identity (`Authorization: Bearer <token>`)
+- **Content Type**: Telling the server what format the request body is in (`Content-Type: application/json`)
+- **Accept**: Telling the server what format you expect the response in
+
+## Path Variables
+Path Variables (or Route Parameters) are essential for identifying a specific resource. They are embedded directly within the URL path.
+
+### Format
+`/resource/{value}`
+
+### Usage
+Used to retrieve, update, or delete a single, unique item.
